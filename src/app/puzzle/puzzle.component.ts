@@ -38,6 +38,9 @@ export class PuzzleComponent implements OnInit {
 
   foundNode: any;
 
+  // moves from current configuration to solved puzzle
+  moves: number[] = [];
+
   constructor() { }
 
   ngOnInit(): void {
@@ -178,6 +181,63 @@ export class PuzzleComponent implements OnInit {
     return node;
   }
 
+  makeTree(vred: number, depth: number) {
+    if (this.isSorted(this.board)){
+      return;
+    }
+
+    this.ROOT = new MyNode(vred);
+    this.pq.enqueue(this.ROOT);
+    // this.pq.enqueue(this.mojeStablo);
+    console.log(this.pq)
+
+    // this.visitedConf.add(vred);
+    let nivo = 0;
+    let pomfval = this.mdSum(this.numToArr(vred))
+    this.visitedConf.set(vred, pomfval);
+    this.ROOT.setFvalue(pomfval + this.getMisplacedNum(this.numToArr(vred)));
+    // this.ROOT.setFvalue(pomfval);
+
+    let minfvalue = pomfval //+ this.getMisplacedNum(this.numToArr(vred));
+    minfvalue = 31;
+
+    let nodeStack: any[] = [];
+    let childStack: any[] = [];
+    let currNode: MyNode;
+    nodeStack.push(this.ROOT);
+    console.log(this.pq)
+
+    let pomdepth = depth;
+    // while (depth > 0 ) {
+    let pomNode: MyNode;
+    pomNode = this.pq.dequeue();
+    console.log(this.pq)
+    while (true) {
+      // while (depth > 0) {
+
+      childStack = nodeStack;
+      nodeStack = [];
+
+
+      this.addChildNodes(pomNode, pomNode.nodepath.length + 1);
+      if (this.stoper) {
+        // console.log(pomNode);
+
+        this.moves = this.foundNode.nodepath;
+
+        console.log("JSON: ", JSON.stringify(this.ROOT));
+        console.log("MOVES: ", this.foundNode);
+        console.log("TOTAL VISITED: ", this.totalNodes);
+        console.log("Length of the Queue: ", this.pq.queue.length);
+        console.log("Solutions: ", this.solutions);
+        return;
+      }
+
+      pomNode = this.pq.dequeue();
+
+      depth--;
+    }
+  }
   
   // make a move
   makeAmove(numar: number[], move: number) {
@@ -277,5 +337,17 @@ export class PuzzleComponent implements OnInit {
     }
 
     return sum;
+  }
+
+  // return number of misplaced tiles in the current configuration
+  getMisplacedNum(numarr: number[]): number {
+    let pom = 0;
+    for (let i = 0; i < numarr.length; i++) {
+      if (i + 1 != numarr[i])
+        pom++;
+    }
+
+    // console.log("Num Misplaced: ", pom);
+    return pom;
   }
 }
