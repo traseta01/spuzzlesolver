@@ -9,7 +9,11 @@ import { MyNode, PriorityQueue } from '../utils/node';
 export class PuzzleComponent implements OnInit {
 
   // main board
-  board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // hardest configuration to solve
+  board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
+
+  // board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 
   // array of possible indexes on the board to move to
@@ -349,5 +353,16 @@ export class PuzzleComponent implements OnInit {
 
     // console.log("Num Misplaced: ", pom);
     return pom;
+  }
+
+  async solveFromMoves(numar: number[]) {
+    for (let i of numar) {
+      this.board = this.makeAmove(this.board, i);
+      await this.delay(150);
+    }
+  }
+
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
