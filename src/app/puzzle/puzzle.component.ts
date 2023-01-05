@@ -8,11 +8,9 @@ import { MyNode, PriorityQueue } from '../utils/node';
 })
 export class PuzzleComponent implements OnInit {
 
-
   // main board
   board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  configuration = new Set();
 
   // array of possible indexes on the board to move to
   currentMoves = [-1, -1, -1, -1]
@@ -22,6 +20,23 @@ export class PuzzleComponent implements OnInit {
 
   // priority quee for tree traversal
   pq = new PriorityQueue();
+
+  // solution found indicator
+  stoper = false;
+
+  // total number of nodes in the tree
+  totalNodes = 1;
+
+  // keep track of visited configurations
+  configuration = new Set();
+
+  // to do comment
+  visitedConf = new Map<number, number>();
+
+  // solution to the puzzle
+  solutions: MyNode[] = [];
+
+  foundNode: any;
 
   constructor() { }
 
@@ -112,7 +127,65 @@ export class PuzzleComponent implements OnInit {
     // return new configuration
     return myClonedArray;
   }
+  
 
+  // add node to a tree
+  addChildNodes(node: any, nivo: any): MyNode {
+
+    let pomniz = this.numToArr(node.mcVal)
+    let tekuciPotezi = this.getPossibleMoves(3, pomniz.indexOf(9));
+
+    for (let i of tekuciPotezi) {
+      // if move is valid
+      if (i > -1) {
+        // console.log("Made a move: ", this.moveNextTree(this.numToArr(node.mcVal), i))
+        let pompotezniz = this.makeAmove(this.numToArr(node.mcVal), i);
+
+
+        // get FVALUE of previously visited configuration
+        let yap = this.visitedConf.get(this.arrayToNum(pompotezniz));
+        if (yap === undefined)
+        {
+          // any number greater than maximum number of moves for 3x3 puzzle
+          yap = 100;
+        }
+
+        if (!this.visitedConf.has(this.arrayToNum(pompotezniz)) || yap >= nivo + this.mdSum(pompotezniz)) {
+          let niz: number[] = [];
+          niz = [...node.nodepath];
+          // console.log("Potezi do sad: ", niz)
+          niz.push(i);
+
+          let tmpNode = new MyNode(this.arrayToNum(this.makeAmove(this.numToArr(node.mcVal), i)), [], nivo + this.mdSum(pompotezniz), niz);
+          // if (tmpNode.FVALUE <= 31)
+          this.pq.enqueue(tmpNode);
+          node.children.push(tmpNode);
+
+          this.visitedConf.set(this.arrayToNum(pompotezniz), tmpNode.FVALUE);
+          this.totalNodes++;
+          // return node;
+          if (this.isSorted(pompotezniz)) {
+            this.solutions.push(tmpNode);
+
+            this.stoper = true
+
+            this.foundNode = tmpNode;
+          }
+        }
+      }
+    }
+
+    return node;
+  }
+
+  
+  // make a move
+  makeAmove(numar: number[], move: number) {
+    let myClonedArray = [...numar];
+    let indexOfNine = numar.indexOf(9);
+    [myClonedArray[move], myClonedArray[indexOfNine]] = [myClonedArray[indexOfNine], myClonedArray[move]];
+    return myClonedArray;
+  }
 
   /* Utility functions */
 
@@ -156,5 +229,53 @@ export class PuzzleComponent implements OnInit {
     }
 
     return array;
+  }
+
+
+  // return array of digits from number
+  numToArr(num: number): number[] {
+    let pom = num;
+    let niz: number[] = [];
+
+    // :)
+    for (let i of pom.toString()) {
+      niz.push(Number(i));
+    }
+
+    return niz;
+  }
+
+  // return number from an array of digits
+  arrayToNum(numarr: number[]): number {
+    let pom = 0;
+
+    for (let i = 0; i < numarr.length; i++) {
+      pom = (pom + numarr[i]) * 10;
+    }
+
+    return pom / 10;
+  }
+
+  // get manhattan distance for a field value
+  getManhattanDistance(numarr: number[], size: number, value: number): number {
+    let indexCurr = numarr.indexOf(value);
+    let indexProper = value - 1;
+
+    // console.log("Index CURR: ", indexCurr);
+    // console.log("Index PROPER: ", indexProper);
+
+    return Math.abs(Math.floor(indexCurr / size) - Math.floor(indexProper / size)) + Math.abs(indexCurr % 3 - indexProper % 3);
+  }
+
+  // get sum of manhattan distances for a configuration passed in
+  mdSum(numarr: number[]): number {
+
+    let sum = 0;
+
+    for (let i of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      sum += this.getManhattanDistance(numarr, 3, i);
+    }
+
+    return sum;
   }
 }
