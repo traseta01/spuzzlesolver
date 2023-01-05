@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MyNode, PriorityQueue } from '../utils/node';
 
 @Component({
   selector: 'app-puzzle',
@@ -8,12 +9,19 @@ import { Component, OnInit } from '@angular/core';
 export class PuzzleComponent implements OnInit {
 
 
+  // main board
   board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   configuration = new Set();
 
   // array of possible indexes on the board to move to
   currentMoves = [-1, -1, -1, -1]
+
+  // root node of the solution tree
+  ROOT: any;
+
+  // priority quee for tree traversal
+  pq = new PriorityQueue();
 
   constructor() { }
 
