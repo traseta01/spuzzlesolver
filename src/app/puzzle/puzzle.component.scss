@@ -1,0 +1,29 @@
+main {
+    display: grid;
+    grid-template-columns: 150px 150px 150px;
+    grid-gap: 0px;
+    border: 4px rgb(29, 28, 28) solid;
+    width: 450px;
+    background-color: black;
+}
+
+.board {
+    // border: 1px gray solid;
+    border: 1px rgb(29, 28, 28) solid;
+    height: 150px;
+    background-color: rgb(116, 147, 175);
+    font-size: 30px;
+}
+
+.board-special {
+    // border: 1px gray solid;
+    border: 1px black solid;
+    // background-color: rgb(223, 223, 188);
+    background-color: rgb(7, 7, 7);
+    height: 150px;
+    font-size: 30px;
+}
+
+button {
+    border-radius: 12px;
+}

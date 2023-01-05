@@ -1,0 +1,4 @@
+<p>Sliding Puzzle</p>
+<main>
+    <button *ngFor="let i of board"  (click)="clickFunction(i)" [ngClass]="'board'" [class.board-special]="i===9">{{i | notnine}}</button>
+</main>
