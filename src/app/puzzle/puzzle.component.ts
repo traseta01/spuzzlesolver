@@ -134,7 +134,7 @@ export class PuzzleComponent implements OnInit {
     // return new configuration
     return myClonedArray;
   }
-  
+
 
   // add node to a tree
   addChildNodes(node: any, nivo: any): MyNode {
@@ -148,11 +148,12 @@ export class PuzzleComponent implements OnInit {
         // console.log("Made a move: ", this.moveNextTree(this.numToArr(node.mcVal), i))
         let pompotezniz = this.makeAmove(this.numToArr(node.mcVal), i);
 
+        if ((nivo + this.mdSum(pompotezniz)) > 31)
+          continue
 
         // get FVALUE of previously visited configuration
         let yap = this.visitedConf.get(this.arrayToNum(pompotezniz));
-        if (yap === undefined)
-        {
+        if (yap === undefined) {
           // any number greater than maximum number of moves for 3x3 puzzle
           yap = 100;
         }
@@ -186,7 +187,7 @@ export class PuzzleComponent implements OnInit {
   }
 
   makeTree(vred: number, depth: number) {
-    if (this.isSorted(this.board)){
+    if (this.isSorted(this.board)) {
       return;
     }
 
@@ -223,6 +224,12 @@ export class PuzzleComponent implements OnInit {
       nodeStack = [];
 
 
+      // don't visit nodes that give more than 31 moves
+      // if (pomNode.FVALUE > 31) {
+      //   pomNode = this.pq.dequeue();
+      //   continue
+      // }
+
       this.addChildNodes(pomNode, pomNode.nodepath.length + 1);
       if (this.stoper) {
         // console.log(pomNode);
@@ -242,7 +249,7 @@ export class PuzzleComponent implements OnInit {
       depth--;
     }
   }
-  
+
   // make a move
   makeAmove(numar: number[], move: number) {
     let myClonedArray = [...numar];
