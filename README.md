@@ -1,5 +1,7 @@
 # Spuzzle
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.5.
+Sliding puzzle solver using A* algorithm.
 
 ## About
+
+Try it here: https://traseta01.github.io/spuzzlesolver/
