@@ -243,7 +243,7 @@ export class PuzzleComponent implements OnInit {
     return myClonedArray;
   }
 
-  resetBoard(){
+  resetBoard() {
     this.configuration = new Set();
     this.currentMoves = [-1, -1, -1, -1]
     this.ROOT = null;
@@ -270,8 +270,8 @@ export class PuzzleComponent implements OnInit {
 
     // moves from current configuration to solved puzzle
     this.moves = [];
-  
-    this.board = [1,2,3,4,5,6,7,8,9]
+
+    this.board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   }
 
   /* Utility functions */
@@ -379,10 +379,14 @@ export class PuzzleComponent implements OnInit {
   }
 
   async solveFromMoves(numar: number[]) {
+    if (numar.length < 1)
+      return
     for (let i of numar) {
       this.board = this.makeAmove(this.board, i);
       await this.delay(150);
     }
+
+    this.resetBoard()
   }
 
   delay(ms: number) {
