@@ -1,10 +1,11 @@
-<p>Sliding Puzzle</p>
+<h3 style="margin-left: 100px;">Sliding Puzzle</h3>
 <main>
     <button *ngFor="let i of board" (click)="clickFunction(i)" [ngClass]="'board'" [class.board-special]="i===9">{{i |
         notnine}}</button>
 </main>
-<button (click)="shuffleBoard(board)">Shuffle</button>
+<div style="margin-left: 100px;">
 
+<button (click)="shuffleBoard(board)">Shuffle</button>
 <button (click)="makeTree(arrayToNum(this.board), 31)">Find Solution</button>
 <button (click)="solveFromMoves(moves)">SolveMoves</button>
 <button (click)="resetBoard()">Reset</button>
@@ -23,3 +24,5 @@
 <p>
     <b>Nodes Currently in the Queue:</b> {{this.pq.queue.length}}
 </p>
+
+</div>
