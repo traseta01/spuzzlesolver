@@ -12,10 +12,12 @@ export class PuzzleComponent implements OnInit {
   // board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   // hardest configuration to solve
-  board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
-  // board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
+  // board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
+  board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
 
 
+  // 'unsolvable' configuration
+  // board = [6, 4, 2, 8, 3, 5, 1, 7, 9];
 
   // array of possible indexes on the board to move to
   currentMoves = [-1, -1, -1, -1]
@@ -45,6 +47,9 @@ export class PuzzleComponent implements OnInit {
 
   // moves from current configuration to solved puzzle
   moves: number[] = [];
+
+  // disable solve moves button
+  disabledButton = false
 
   constructor() { }
 
@@ -381,12 +386,15 @@ export class PuzzleComponent implements OnInit {
   async solveFromMoves(numar: number[]) {
     if (numar.length < 1)
       return
+    
+      this.disabledButton = true
     for (let i of numar) {
       this.board = this.makeAmove(this.board, i);
       await this.delay(150);
     }
 
     this.resetBoard()
+      this.disabledButton = false
   }
 
   delay(ms: number) {

@@ -9,7 +9,7 @@
         <br />
         <button (click)="shuffleBoard(board)">Shuffle</button>
         <button (click)="makeTree(arrayToNum(this.board), 31)">Find Solution</button>
-        <button (click)="solveFromMoves(moves)">SolveMoves</button>
+        <button [disabled]="disabledButton" (click)="solveFromMoves(moves)">SolveMoves</button>
         <button (click)="resetBoard()">Reset</button>
         <p>
             <b>Manhattan Distance:</b> {{mdSum(this.board)}}
