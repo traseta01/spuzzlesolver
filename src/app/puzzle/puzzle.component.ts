@@ -8,13 +8,12 @@ import { MyNode, PriorityQueue } from '../utils/node';
 })
 export class PuzzleComponent implements OnInit {
 
-  globalcntr = 0
   // main board
   // board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   // hardest configuration to solve
-  board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
-  // board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
+  // board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
+  board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
 
 
   // 'unsolvable' configuration
@@ -39,7 +38,7 @@ export class PuzzleComponent implements OnInit {
   configuration = new Set();
 
   // to do comment
-  visitedConf = new Map<number[], number>();
+  visitedConf = new Map<string, number>();
 
   // solution to the puzzle
   solutions: MyNode[] = [];
@@ -116,7 +115,8 @@ export class PuzzleComponent implements OnInit {
     this.configuration = new Set();
 
     // to do comment
-    this.visitedConf = new Map<number[], number>();
+    // this.visitedConf = new Map<string, number>();
+    this.visitedConf = new Map<string, number>();
 
     // solution to the puzzle
     this.solutions = [];
@@ -159,25 +159,23 @@ export class PuzzleComponent implements OnInit {
 
 
   // add node to a tree
-  addChildNodes(node: MyNode, nivo: any): MyNode {
+  addChildNodes(node: any, nivo: any): MyNode {
 
-    let tekuciPotezi = this.getPossibleMoves(3, node.mcVal.indexOf(9));
-
-    console.log("Tekuci POTEZI: ", tekuciPotezi);
+    let pomniz = node.mcVal
+    let tekuciPotezi = this.getPossibleMoves(3, pomniz.indexOf(9));
 
     for (let i of tekuciPotezi) {
 
       // if move is valid
       if (i > -1) {
         let pompotezniz = this.makeAmove(node.mcVal, i);
-        console.log("addChildNodes pompotezniz: ", pompotezniz);
 
         // do not visit nodes where FVALUE is greater than 31
         if ((nivo + this.mdSum(pompotezniz)) > 31)
-          continue;
+          continue
 
         // check if this configuration was already visited
-        let yap = this.visitedConf.get(pompotezniz);
+        let yap = this.visitedConf.get(this.arrayToStr(pompotezniz));
 
         if (yap === undefined) {
 
@@ -190,7 +188,7 @@ export class PuzzleComponent implements OnInit {
           this.pq.enqueue(tmpNode);
           node.children.push(tmpNode);
 
-          this.visitedConf.set(tmpNode.mcVal, tmpNode.FVALUE);
+          this.visitedConf.set(this.arrayToStr(pompotezniz), tmpNode.FVALUE);
           this.totalNodes++;
 
           if (this.isSorted(pompotezniz)) {
@@ -207,7 +205,6 @@ export class PuzzleComponent implements OnInit {
     return node;
   }
 
-
   makeTree(vred: number[], depth: number) {
     if (this.isSorted(this.board)) {
       return;
@@ -215,24 +212,19 @@ export class PuzzleComponent implements OnInit {
 
     this.ROOT = new MyNode(vred);
 
+    let pomfval = this.mdSum(vred)
+    let pomstr = this.arrayToStr(vred)
+    // this.ROOT.setFvalue(pomfval + this.getMisplacedNum(this.numToArr(vred)));
+    this.ROOT.setFvalue(pomfval + this.getMisplacedNum(vred));
 
     this.pq.enqueue(this.ROOT);
-
-    let pomfval = this.mdSum(vred)
-    this.visitedConf.set(vred, pomfval);
-    this.ROOT.setFvalue(pomfval + this.getMisplacedNum(vred));
 
     let pomNode: MyNode;
     pomNode = this.pq.dequeue();
 
-
-
-    while (this.globalcntr < 20 || true) {
-
-      this.globalcntr++;
+    while (true) {
 
       this.addChildNodes(pomNode, pomNode.nodepath.length + 1);
-
       if (this.stoper) {
 
         this.moves = this.foundNode.nodepath;
@@ -246,6 +238,7 @@ export class PuzzleComponent implements OnInit {
       }
 
       pomNode = this.pq.dequeue();
+      // console.log("POMOCNI NODE", pomNode)
 
       // depth--;
     }
@@ -277,7 +270,7 @@ export class PuzzleComponent implements OnInit {
     this.configuration = new Set();
 
     // to do comment
-    this.visitedConf = new Map<number[], number>();
+    this.visitedConf = new Map<string, number>();
 
     // solution to the puzzle
     this.solutions = [];
@@ -359,18 +352,20 @@ export class PuzzleComponent implements OnInit {
     return pom / 10;
   }
 
-  // return string from array of numbers
+  // return number from an array of digits
   arrayToStr(numarr: number[]): string {
+    if (numarr.length === 0)
+      return ""
 
     let str = "";
 
     for (let i = 0; i < numarr.length; i++) {
-      str += numarr[i].toString()
+      str += numarr[i].toString();
     }
 
-
-    return ""
+    return str;
   }
+
 
   // get manhattan distance for a field value
   getManhattanDistance(numarr: number[], size: number, value: number): number {
@@ -410,15 +405,15 @@ export class PuzzleComponent implements OnInit {
   async solveFromMoves(numar: number[]) {
     if (numar.length < 1)
       return
-
-    this.disabledButton = true
+    
+      this.disabledButton = true
     for (let i of numar) {
       this.board = this.makeAmove(this.board, i);
       await this.delay(150);
     }
 
     this.resetBoard()
-    this.disabledButton = false
+      this.disabledButton = false
   }
 
   delay(ms: number) {
