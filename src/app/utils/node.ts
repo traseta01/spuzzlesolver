@@ -1,10 +1,10 @@
 export class MyNode {
     FVALUE: number;
-    mcVal: number;
+    mcVal: number[];
     children: MyNode[];
     nodepath: number[];
 
-    constructor(val = 0, chl = [], fval = -1, np: number[] = []) {
+    constructor(val: number[] = [] , chl = [], fval = -1, np: number[] = []) {
         this.mcVal = val;
         this.children = chl;
         this.FVALUE = fval;
