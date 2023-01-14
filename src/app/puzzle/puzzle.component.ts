@@ -214,7 +214,6 @@ export class PuzzleComponent implements OnInit {
 
     let pomfval = this.mdSum(vred)
     let pomstr = this.arrayToStr(vred)
-    // this.ROOT.setFvalue(pomfval + this.getMisplacedNum(this.numToArr(vred)));
     this.ROOT.setFvalue(pomfval + this.getMisplacedNum(vred));
 
     this.pq.enqueue(this.ROOT);
@@ -327,30 +326,6 @@ export class PuzzleComponent implements OnInit {
     return array;
   }
 
-
-  // return array of digits from number
-  numToArr(num: number): number[] {
-    let pom = num;
-    let niz: number[] = [];
-
-    // :)
-    for (let i of pom.toString()) {
-      niz.push(Number(i));
-    }
-
-    return niz;
-  }
-
-  // return number from an array of digits
-  arrayToNum(numarr: number[]): number {
-    let pom = 0;
-
-    for (let i = 0; i < numarr.length; i++) {
-      pom = (pom + numarr[i]) * 10;
-    }
-
-    return pom / 10;
-  }
 
   // return number from an array of digits
   arrayToStr(numarr: number[]): string {
