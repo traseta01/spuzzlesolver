@@ -38,7 +38,7 @@ export class PuzzleComponent implements OnInit {
   configuration = new Set();
 
   // to do comment
-  visitedConf = new Map<number, number>();
+  visitedConf = new Map<string, number>();
 
   // solution to the puzzle
   solutions: MyNode[] = [];
@@ -115,7 +115,7 @@ export class PuzzleComponent implements OnInit {
     this.configuration = new Set();
 
     // to do comment
-    this.visitedConf = new Map<number, number>();
+    this.visitedConf = new Map<string, number>();
 
     // solution to the puzzle
     this.solutions = [];
@@ -174,171 +174,171 @@ export class PuzzleComponent implements OnInit {
           continue
 
         // check if this configuration was already visited
-        let yap = this.visitedConf.get(this.arrayToNum(pompotezniz));
+      let yap = this.visitedConf.get(this.arrayToStr(pompotezniz));
 
-        if (yap === undefined) {
+      if (yap === undefined) {
 
-          let niz: number[] = [];
-          niz = [...node.nodepath];
-          niz.push(i);
+        let niz: number[] = [];
+        niz = [...node.nodepath];
+        niz.push(i);
 
-          let tmpNode = new MyNode(this.arrayToNum(this.makeAmove(this.numToArr(node.mcVal), i)), [], nivo + this.mdSum(pompotezniz), niz);
+        let tmpNode = new MyNode(this.arrayToNum(this.makeAmove(this.numToArr(node.mcVal), i)), [], nivo + this.mdSum(pompotezniz), niz);
 
-          this.pq.enqueue(tmpNode);
-          node.children.push(tmpNode);
+        this.pq.enqueue(tmpNode);
+        node.children.push(tmpNode);
 
-          this.visitedConf.set(this.arrayToNum(pompotezniz), tmpNode.FVALUE);
-          this.totalNodes++;
+        this.visitedConf.set(this.arrayToStr(pompotezniz), tmpNode.FVALUE);
+        this.totalNodes++;
 
-          if (this.isSorted(pompotezniz)) {
+        if (this.isSorted(pompotezniz)) {
 
-            this.solutions.push(tmpNode);
-            this.stoper = true
-            this.foundNode = tmpNode;
+          this.solutions.push(tmpNode);
+          this.stoper = true
+          this.foundNode = tmpNode;
 
-          }
         }
       }
     }
-
-    return node;
   }
 
-  makeTree(vred: number, depth: number) {
-    if (this.isSorted(this.board)) {
+  return node;
+}
+
+makeTree(vred: number, depth: number) {
+  if (this.isSorted(this.board)) {
+    return;
+  }
+
+  this.ROOT = new MyNode(vred);
+  this.pq.enqueue(this.ROOT);
+
+  let pomfval = this.mdSum(this.numToArr(vred))
+  this.visitedConf.set(vred.toString(), pomfval);
+  this.ROOT.setFvalue(pomfval + this.getMisplacedNum(this.numToArr(vred)));
+
+  let pomNode: MyNode;
+  pomNode = this.pq.dequeue();
+
+  while (true) {
+
+    this.addChildNodes(pomNode, pomNode.nodepath.length + 1);
+    if (this.stoper) {
+
+      this.moves = this.foundNode.nodepath;
+      console.log("JSON: ", JSON.stringify(this.ROOT));
+      console.log("Number of moves: ", this.foundNode.FVALUE);
+      console.log("Total No of Nodes Visited: ", this.totalNodes);
+      console.log("Length of the Queue: ", this.pq.queue.length);
+      console.log("Solution: ", this.solutions);
       return;
+
     }
 
-    this.ROOT = new MyNode(vred);
-    this.pq.enqueue(this.ROOT);
-
-    let pomfval = this.mdSum(this.numToArr(vred))
-    this.visitedConf.set(vred, pomfval);
-    this.ROOT.setFvalue(pomfval + this.getMisplacedNum(this.numToArr(vred)));
-
-    let pomNode: MyNode;
     pomNode = this.pq.dequeue();
 
-    while (true) {
-
-      this.addChildNodes(pomNode, pomNode.nodepath.length + 1);
-      if (this.stoper) {
-
-        this.moves = this.foundNode.nodepath;
-        console.log("JSON: ", JSON.stringify(this.ROOT));
-        console.log("Number of moves: ", this.foundNode.FVALUE);
-        console.log("Total No of Nodes Visited: ", this.totalNodes);
-        console.log("Length of the Queue: ", this.pq.queue.length);
-        console.log("Solution: ", this.solutions);
-        return;
-
-      }
-
-      pomNode = this.pq.dequeue();
-
-      // depth--;
-    }
+    // depth--;
   }
+}
 
-  // make a move
-  makeAmove(numar: number[], move: number) {
-    let myClonedArray = [...numar];
-    let indexOfNine = numar.indexOf(9);
-    [myClonedArray[move], myClonedArray[indexOfNine]] = [myClonedArray[indexOfNine], myClonedArray[move]];
-    return myClonedArray;
-  }
+// make a move
+makeAmove(numar: number[], move: number) {
+  let myClonedArray = [...numar];
+  let indexOfNine = numar.indexOf(9);
+  [myClonedArray[move], myClonedArray[indexOfNine]] = [myClonedArray[indexOfNine], myClonedArray[move]];
+  return myClonedArray;
+}
 
-  resetBoard() {
-    this.configuration = new Set();
-    this.currentMoves = [-1, -1, -1, -1]
-    this.ROOT = null;
+resetBoard() {
+  this.configuration = new Set();
+  this.currentMoves = [-1, -1, -1, -1]
+  this.ROOT = null;
 
-    // priority quee for tree traversal
-    this.pq = new PriorityQueue();
+  // priority quee for tree traversal
+  this.pq = new PriorityQueue();
 
-    // solution found indicator
-    this.stoper = false;
+  // solution found indicator
+  this.stoper = false;
 
-    // total number of nodes in the tree
-    this.totalNodes = 1;
+  // total number of nodes in the tree
+  this.totalNodes = 1;
 
-    // keep track of visited configurations
-    this.configuration = new Set();
+  // keep track of visited configurations
+  this.configuration = new Set();
 
-    // to do comment
-    this.visitedConf = new Map<number, number>();
+  // to do comment
+  this.visitedConf = new Map<string, number>();
 
-    // solution to the puzzle
-    this.solutions = [];
+  // solution to the puzzle
+  this.solutions = [];
 
-    this.foundNode = undefined;
+  this.foundNode = undefined;
 
-    // moves from current configuration to solved puzzle
-    this.moves = [];
+  // moves from current configuration to solved puzzle
+  this.moves = [];
 
-    this.board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-  }
+  this.board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+}
 
-  /* Utility functions */
+/* Utility functions */
 
-  // return random int from min inclusive, max exclusive interval
-  getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
-  }
+// return random int from min inclusive, max exclusive interval
+getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+}
 
-  // check if array is sorted
-  isSorted(numarr: number[]): boolean {
+// check if array is sorted
+isSorted(numarr: number[]): boolean {
 
-    if (numarr.length <= 1) {
-      return true;
-    }
-
-    for (let i = 1; i < numarr.length; i++) {
-      if (numarr[i - 1] > numarr[i])
-        return false
-    }
-
+  if (numarr.length <= 1) {
     return true;
   }
 
-
-  // Fisher-Yates unbiased array shuffle
-  shuffle(array: number[]) {
-    let currentIndex = array.length, randomIndex;
-
-    // While there remain elements to shuffle.
-    while (currentIndex != 0) {
-
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-
-    return array;
+  for (let i = 1; i < numarr.length; i++) {
+    if (numarr[i - 1] > numarr[i])
+      return false
   }
 
+  return true;
+}
 
-  // return array of digits from number
-  numToArr(num: number): number[] {
-    let pom = num;
-    let niz: number[] = [];
 
-    // :)
-    for (let i of pom.toString()) {
-      niz.push(Number(i));
-    }
+// Fisher-Yates unbiased array shuffle
+shuffle(array: number[]) {
+  let currentIndex = array.length, randomIndex;
 
-    return niz;
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
   }
 
-  // return number from an array of digits
-  arrayToNum(numarr: number[]): number {
+  return array;
+}
+
+
+// return array of digits from number
+numToArr(num: number): number[] {
+  let pom = num;
+  let niz: number[] = [];
+
+  // :)
+  for (let i of pom.toString()) {
+    niz.push(Number(i));
+  }
+
+  return niz;
+}
+
+// return number from an array of digits
+arrayToNum(numarr: number[]): number {
     let pom = 0;
 
     for (let i = 0; i < numarr.length; i++) {
@@ -346,6 +346,19 @@ export class PuzzleComponent implements OnInit {
     }
 
     return pom / 10;
+  }
+
+  // return string from array of numbers
+  arrayToStr(numarr: number[]): string {
+
+    let str = "";
+
+    for (let i = 0; i < numarr.length; i++) {
+      str += numarr[i].toString()
+    }
+
+
+    return ""
   }
 
   // get manhattan distance for a field value
@@ -386,15 +399,15 @@ export class PuzzleComponent implements OnInit {
   async solveFromMoves(numar: number[]) {
     if (numar.length < 1)
       return
-    
-      this.disabledButton = true
+
+    this.disabledButton = true
     for (let i of numar) {
       this.board = this.makeAmove(this.board, i);
       await this.delay(150);
     }
 
     this.resetBoard()
-      this.disabledButton = false
+    this.disabledButton = false
   }
 
   delay(ms: number) {
