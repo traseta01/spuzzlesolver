@@ -1,7 +1,8 @@
 <h3 style="margin-left: 100px;">Sliding Puzzle</h3>
 <main>
-    <button *ngFor="let i of board" (click)="clickFunction(i)" [ngClass]="'board'" [class.board-special]="i===9">{{i |
-        notnine}}</button>
+    <button *ngFor="let i of board" (click)="clickFunction(i)" [ngClass]="'board'"
+        [class.board-special]="i===this.bsize*this.bsize">{{i |
+        notnine : this.bsize}}</button>
 </main>
 <div style="margin-left: 100px;">
 
@@ -11,9 +12,10 @@
         <button (click)="makeTree(this.board, 31)">Find Solution</button>
         <button [disabled]="disabledButton" (click)="solveFromMoves(moves)">SolveMoves</button>
         <button (click)="resetBoard()">Reset</button>
-        <p>
-            <b>Manhattan Distance:</b> {{mdSum(this.board)}}
-        </p>
+        <pre>
+
+            <b>Manhattan Distance:</b> {{mdSum(this.board)}} <b> Linear Conflicts</b> {{linearConflicts(this.board)}} <b> Num Missplaced</b> {{getMisplacedNum(this.board)}}
+        </pre>
         <p>
             <b>No of Moves to solve:</b> {{this.moves.length}}
         </p>
@@ -21,11 +23,15 @@
             <b>Solution:</b> {{this.moves}}
         </p>
         <p>
-            <b>Nodes Visited:</b> {{this.totalNodes}}
+            <b>Nodes Visited:</b> {{this.totalNodes | number: '2.'}}
         </p>
         <p>
-            <b>Nodes Currently in the Queue:</b> {{this.pq.queue.length}}
+            <b>Nodes Currently in the Queue:</b> {{this.pq01.heap.length | number: '2.'}}
+        </p>
+        <p>
+            <b>Time:</b> {{this.timeTotal | number: '2.'}} milisecs
         </p>
     </div>
+    <button (click)="linearConflicts(this.board)">lConflicts</button>
 
 </div>

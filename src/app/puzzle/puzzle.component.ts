@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MyNode, PriorityQueue } from '../utils/node';
+import { MyNode, PriorityQueue, PriorityQueue1 } from '../utils/node';
 
 @Component({
   selector: 'app-puzzle',
@@ -8,15 +8,32 @@ import { MyNode, PriorityQueue } from '../utils/node';
 })
 export class PuzzleComponent implements OnInit {
 
-  // main board
-  // board = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // board size
+  // bsize = 4
+  bsize = 4
 
-  // hardest configuration to solve
+  nizCounter = []
+
+  // hardest configuration to solve 3x3
   // board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
-  board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
+  // board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
 
+  // main board
+  // board = this.setBoard(this.bsize);
+  // hardest configuration to solve 4x4
+  // board = [15, 14, 8, 12, 10, 11, 9, 13, 2, 6, 5, 1, 3, 7, 4, 16]
 
-  // 'unsolvable' configuration
+  // easier to solve configurations
+  // board = [4, 10, 2, 8, 1, 6, 11, 7, 5, 12, 16, 3, 14, 9, 15, 13]
+  // board = [16, 10, 7, 2, 6, 13, 11, 3, 4, 8, 12, 15, 1, 9, 14, 5]
+  // board = [1, 6, 12, 10, 7, 4, 3, 13, 15, 14, 5, 2, 8, 9, 16, 11]
+  // board = [7, 10, 5, 8, 1, 4, 15, 12, 6, 11, 14, 2, 9, 3, 16, 13]
+  // board = [1, 10,  16, 2, 3, 7, 13, 6, 9, 14, 8, 12, 4, 15, 5, 11]
+  board = [12, 1, 11, 5, 2, 13, 16, 7, 10, 6, 3, 9, 14, 15, 4, 8]
+
+  timeTotal: any;
+
+  // 'unsolvable' configuration 3x3
   // board = [6, 4, 2, 8, 3, 5, 1, 7, 9];
 
   // array of possible indexes on the board to move to
@@ -27,6 +44,7 @@ export class PuzzleComponent implements OnInit {
 
   // priority quee for tree traversal
   pq = new PriorityQueue();
+  pq01 = new PriorityQueue1();
 
   // solution found indicator
   stoper = false;
@@ -61,17 +79,17 @@ export class PuzzleComponent implements OnInit {
   clickFunction(num: number): void {
 
     // do nothing if we click empty field
-    if (num === 9) {
+    if (num === this.bsize * this.bsize) {
       return
     }
 
     // get index of clicked field
     let currIndex = this.board.indexOf(num);
     // get index of empty field
-    let indexOfNine = this.board.indexOf(9);
+    let indexOfNine = this.board.indexOf(this.bsize * this.bsize);
 
     // if possible moves do not include clicked field do nothing
-    if (!this.getPossibleMoves(3, indexOfNine).includes(currIndex))
+    if (!this.getPossibleMoves(this.bsize, indexOfNine).includes(currIndex))
       return;
 
     // make a move on the board
@@ -87,8 +105,8 @@ export class PuzzleComponent implements OnInit {
   // get possible moves, input arguments: size of puzzle and index of empty field (indexOf(9))
   getPossibleMoves(size: number, index: number): number[] {
 
-    let left = index - 1 >= 0 && (index - 1) % 3 != size - 1 ? index - 1 : -1;
-    let right = index + 1 < this.board.length && (index + 1) % 3 != 0 ? index + 1 : -1;
+    let left = index - 1 >= 0 && (index - 1) % size != size - 1 ? index - 1 : -1;
+    let right = index + 1 < this.board.length && (index + 1) % size != 0 ? index + 1 : -1;
     let up = index - size >= 0 ? index - size : -1;
     let down = index + size < this.board.length ? index + size : -1;
 
@@ -103,7 +121,8 @@ export class PuzzleComponent implements OnInit {
     this.ROOT = null;
 
     // priority quee for tree traversal
-    this.pq = new PriorityQueue();
+    // this.pq = new PriorityQueue();
+    this.pq01 = new PriorityQueue1();
 
     // solution found indicator
     this.stoper = false;
@@ -127,10 +146,10 @@ export class PuzzleComponent implements OnInit {
     this.moves = [];
 
     // this.moveNum = 0;
-    let brojac = 300 + this.getRandomInt(1, 3);
+    let brojac = 300 + this.getRandomInt(1, this.bsize);
     while (brojac > 0) {
       let niz: number[] = [];
-      this.currentMoves = this.getPossibleMoves(3, this.board.indexOf(9))
+      this.currentMoves = this.getPossibleMoves(this.bsize, this.board.indexOf(this.bsize * this.bsize))
       this.currentMoves.forEach(el => {
         if (el >= 0)
           niz.push(this.currentMoves.indexOf(el));
@@ -147,7 +166,7 @@ export class PuzzleComponent implements OnInit {
   moveNext(numar: number[], move: number) {
 
     let myClonedArray = [...numar];
-    let indexOfNine = numar.indexOf(9);
+    let indexOfNine = numar.indexOf(this.bsize * this.bsize);
 
     // if move is valid, make a move
     if (this.currentMoves[move] >= 0)
@@ -162,7 +181,7 @@ export class PuzzleComponent implements OnInit {
   addChildNodes(node: any, nivo: any): MyNode {
 
     let pomniz = node.mcVal
-    let tekuciPotezi = this.getPossibleMoves(3, pomniz.indexOf(9));
+    let tekuciPotezi = this.getPossibleMoves(this.bsize, pomniz.indexOf(this.bsize * this.bsize));
 
     for (let i of tekuciPotezi) {
 
@@ -171,21 +190,30 @@ export class PuzzleComponent implements OnInit {
         let pompotezniz = this.makeAmove(node.mcVal, i);
 
         // do not visit nodes where FVALUE is greater than 31
-        if ((nivo + this.mdSum(pompotezniz)) > 31)
+        if ((nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz)) > 80)
           continue
 
         // check if this configuration was already visited
         let yap = this.visitedConf.get(this.arrayToStr(pompotezniz));
 
+        // if (yap === undefined || yap - node.FVALUE < 1 ) {
+        // if (yap === undefined || yap <= node.FVALUE ) {
         if (yap === undefined) {
 
           let niz: number[] = [];
           niz = [...node.nodepath];
           niz.push(i);
 
-          let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz), niz);
+          // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz), niz);
+          // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz), niz);
+          let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2, niz);
+          // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz)*2, niz);
+          // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.linearConflicts(pompotezniz)*2, niz);
+          // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz) + this.getMisplacedNum(pompotezniz)/2, niz);
 
-          this.pq.enqueue(tmpNode);
+
+          // this.pq.enqueue(tmpNode);
+          this.pq01.insert(tmpNode);
           node.children.push(tmpNode);
 
           this.visitedConf.set(this.arrayToStr(pompotezniz), tmpNode.FVALUE);
@@ -210,33 +238,42 @@ export class PuzzleComponent implements OnInit {
       return;
     }
 
+    console.time("01")
+    var begin = Date.now();
+
+
     this.ROOT = new MyNode(vred);
+    // this.ROOT.setFvalue(this.mdSum(vred) + this.getMisplacedNum(vred)/2);
+    // this.ROOT.setFvalue(this.mdSum(vred) + this.getMisplacedNum(vred) / 2);
+    this.ROOT.setFvalue(this.mdSum(vred) + this.linearConflicts(vred) * 2);
 
-    let pomfval = this.mdSum(vred)
-    let pomstr = this.arrayToStr(vred)
-    this.ROOT.setFvalue(pomfval + this.getMisplacedNum(vred));
+    // this.pq.enqueue(this.ROOT);
+    this.pq01.insert(this.ROOT);
 
-    this.pq.enqueue(this.ROOT);
-
-    let pomNode: MyNode;
-    pomNode = this.pq.dequeue();
+    let pomNode: any;
+    // pomNode = this.pq.dequeue();
+    pomNode = this.pq01.pop();
 
     while (true) {
 
       this.addChildNodes(pomNode, pomNode.nodepath.length + 1);
       if (this.stoper) {
+        console.timeEnd("01")
+        var end = Date.now();
+        this.timeTotal = (end - begin);
 
         this.moves = this.foundNode.nodepath;
-        console.log("JSON: ", JSON.stringify(this.ROOT));
-        console.log("Number of moves: ", this.foundNode.FVALUE);
+        // console.log("JSON: ", JSON.stringify(this.ROOT));
+        console.log("Number of moves: ", this.moves.length);
         console.log("Total No of Nodes Visited: ", this.totalNodes);
-        console.log("Length of the Queue: ", this.pq.queue.length);
+        // console.log("Length of the Queue: ", this.pq.queue.length);
         console.log("Solution: ", this.solutions);
         return;
 
       }
 
-      pomNode = this.pq.dequeue();
+      // pomNode = this.pq.dequeue();
+      pomNode = this.pq01.pop();
       // console.log("POMOCNI NODE", pomNode)
 
       // depth--;
@@ -246,10 +283,82 @@ export class PuzzleComponent implements OnInit {
   // make a move
   makeAmove(numar: number[], move: number) {
     let myClonedArray = [...numar];
-    let indexOfNine = numar.indexOf(9);
+    let indexOfNine = numar.indexOf(this.bsize * this.bsize);
     [myClonedArray[move], myClonedArray[indexOfNine]] = [myClonedArray[indexOfNine], myClonedArray[move]];
     return myClonedArray;
   }
+
+
+  linearConflicts(conf: number[]): number {
+
+    // conflits in rows
+    let niz = [...conf];
+
+    let numConflicts = 0
+
+    // take rows and columns from board array
+    for (let i = 0; i < this.bsize; i++) {
+      let pomniz = niz.slice(i * this.bsize, (i + 1) * this.bsize);
+      // console.log("ROWS: ", pomniz);
+
+      // find conflicts in rows
+      let belongsRow: number[] = [];
+      for (let j = 0; j < pomniz.length; j++) {
+        if (pomniz[j] === this.bsize * this.bsize)
+          continue;
+
+        if (pomniz[j] <= (i + 1) * this.bsize && pomniz[j] >= i * this.bsize)
+          belongsRow.push(pomniz[j]);
+      }
+
+      // if have more than one element that belongs in the row
+      if (belongsRow.length > 1) {
+        for (let j = 0; j < belongsRow.length - 1; j++) {
+          for (let k = j + 1; k < belongsRow.length; k++) {
+            if (belongsRow[j] > belongsRow[k]) {
+              // console.log("RED SA konfliktima ", pomniz);
+              numConflicts++;
+            }
+          }
+        }
+      }
+
+      // find conflicts in columns
+      let belongsColumn: number[] = [];
+      pomniz = [];
+      // construct columns
+      for (let j = 0; j < this.bsize; j++) {
+        pomniz.push(conf[i + j * this.bsize]);
+      }
+
+      for (let j = 0; j < pomniz.length; j++) {
+        if (pomniz[j] === this.bsize * this.bsize)
+          continue;
+
+        if ((pomniz[j]-1)%this.bsize === i)
+          belongsColumn.push(pomniz[j]);
+      }
+
+      // if have more than one element that belongs in the row
+      if (belongsColumn.length > 1) {
+        for (let j = 0; j < belongsColumn.length - 1; j++) {
+          for (let k = j + 1; k < belongsColumn.length; k++) {
+            if (belongsColumn[j] > belongsColumn[k]) {
+              // console.log("KOLNA SA konfliktima ", pomniz);
+              numConflicts++;
+            }
+          }
+        }
+      }
+
+      // console.log("Columns, ", pomniz);
+    }
+
+    // console.log("TOTAL CONFLICTS:  ", numConflicts);
+    return numConflicts;
+  }
+
+
 
   resetBoard() {
     this.configuration = new Set();
@@ -257,7 +366,8 @@ export class PuzzleComponent implements OnInit {
     this.ROOT = null;
 
     // priority quee for tree traversal
-    this.pq = new PriorityQueue();
+    // this.pq = new PriorityQueue();
+    this.pq01 = new PriorityQueue1();
 
     // solution found indicator
     this.stoper = false;
@@ -279,7 +389,7 @@ export class PuzzleComponent implements OnInit {
     // moves from current configuration to solved puzzle
     this.moves = [];
 
-    this.board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    this.board = this.setBoard(this.bsize)
   }
 
   /* Utility functions */
@@ -327,7 +437,7 @@ export class PuzzleComponent implements OnInit {
   }
 
 
-  // return number from an array of digits
+  // return string from an array of numbers
   arrayToStr(numarr: number[]): string {
     if (numarr.length === 0)
       return ""
@@ -350,7 +460,7 @@ export class PuzzleComponent implements OnInit {
     // console.log("Index CURR: ", indexCurr);
     // console.log("Index PROPER: ", indexProper);
 
-    return Math.abs(Math.floor(indexCurr / size) - Math.floor(indexProper / size)) + Math.abs(indexCurr % 3 - indexProper % 3);
+    return Math.abs(Math.floor(indexCurr / size) - Math.floor(indexProper / size)) + Math.abs(indexCurr % this.bsize - indexProper % this.bsize);
   }
 
   // get sum of manhattan distances for a configuration passed in
@@ -358,8 +468,8 @@ export class PuzzleComponent implements OnInit {
 
     let sum = 0;
 
-    for (let i of [1, 2, 3, 4, 5, 6, 7, 8]) {
-      sum += this.getManhattanDistance(numarr, 3, i);
+    for (let i = 1; i < this.bsize * this.bsize; i++) {
+      sum += this.getManhattanDistance(numarr, this.bsize, i);
     }
 
     return sum;
@@ -379,19 +489,30 @@ export class PuzzleComponent implements OnInit {
 
   async solveFromMoves(numar: number[]) {
     if (numar.length < 1)
-      return
-    
-      this.disabledButton = true
+      return;
+
+    this.disabledButton = true
     for (let i of numar) {
       this.board = this.makeAmove(this.board, i);
       await this.delay(150);
     }
 
     this.resetBoard()
-      this.disabledButton = false
+    this.disabledButton = false;
   }
 
   delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  setBoard(num: number): number[] {
+
+    let arr = [];
+
+    for (let i = 1; i <= num * num; i++) {
+      arr.push(i);
+    }
+
+    return arr;
   }
 }
