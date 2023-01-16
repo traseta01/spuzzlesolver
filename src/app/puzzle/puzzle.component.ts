@@ -9,8 +9,8 @@ import { MyNode, PriorityQueue, PriorityQueue1 } from '../utils/node';
 export class PuzzleComponent implements OnInit {
 
   // board size
-  // bsize = 4
   bsize = 4
+  // bsize = 3
 
   nizCounter = []
 
@@ -18,23 +18,25 @@ export class PuzzleComponent implements OnInit {
   // board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
   // board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
 
+  // 'unsolvable' configuration 3x3
+  // board = [6, 4, 2, 8, 3, 5, 1, 7, 9];
+
   // main board
   // board = this.setBoard(this.bsize);
   // hardest configuration to solve 4x4
   // board = [15, 14, 8, 12, 10, 11, 9, 13, 2, 6, 5, 1, 3, 7, 4, 16]
 
-  // easier to solve configurations
+  // easier to solve configurations 4x4
   // board = [4, 10, 2, 8, 1, 6, 11, 7, 5, 12, 16, 3, 14, 9, 15, 13]
-  // board = [16, 10, 7, 2, 6, 13, 11, 3, 4, 8, 12, 15, 1, 9, 14, 5]
+  board = [16, 10, 7, 2, 6, 13, 11, 3, 4, 8, 12, 15, 1, 9, 14, 5]
   // board = [1, 6, 12, 10, 7, 4, 3, 13, 15, 14, 5, 2, 8, 9, 16, 11]
   // board = [7, 10, 5, 8, 1, 4, 15, 12, 6, 11, 14, 2, 9, 3, 16, 13]
   // board = [1, 10,  16, 2, 3, 7, 13, 6, 9, 14, 8, 12, 4, 15, 5, 11]
-  board = [12, 1, 11, 5, 2, 13, 16, 7, 10, 6, 3, 9, 14, 15, 4, 8]
+
+  // board = [12, 1, 11, 5, 2, 13, 16, 7, 10, 6, 3, 9, 14, 15, 4, 8]
 
   timeTotal: any;
 
-  // 'unsolvable' configuration 3x3
-  // board = [6, 4, 2, 8, 3, 5, 1, 7, 9];
 
   // array of possible indexes on the board to move to
   currentMoves = [-1, -1, -1, -1]
@@ -196,9 +198,10 @@ export class PuzzleComponent implements OnInit {
         // check if this configuration was already visited
         let yap = this.visitedConf.get(this.arrayToStr(pompotezniz));
 
-        // if (yap === undefined || yap - node.FVALUE < 1 ) {
-        // if (yap === undefined || yap <= node.FVALUE ) {
-        if (yap === undefined) {
+        if (yap === undefined ) {
+        // if (yap === undefined || nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz)*2 < node.FVALUE ) {
+        // if (yap === undefined || yap < nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2) {
+        // if (yap === undefined || yap < nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2) {
 
           let niz: number[] = [];
           niz = [...node.nodepath];
@@ -206,8 +209,8 @@ export class PuzzleComponent implements OnInit {
 
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz), niz);
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz), niz);
-          let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2, niz);
-          // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz)*2, niz);
+          // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2, niz);
+          let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz)*2, niz);
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.linearConflicts(pompotezniz)*2, niz);
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz) + this.getMisplacedNum(pompotezniz)/2, niz);
 
@@ -460,7 +463,7 @@ export class PuzzleComponent implements OnInit {
     // console.log("Index CURR: ", indexCurr);
     // console.log("Index PROPER: ", indexProper);
 
-    return Math.abs(Math.floor(indexCurr / size) - Math.floor(indexProper / size)) + Math.abs(indexCurr % this.bsize - indexProper % this.bsize);
+    return Math.abs(Math.floor(indexCurr / size) - Math.floor(indexProper / size)) + Math.abs(indexCurr % size - indexProper % size);
   }
 
   // get sum of manhattan distances for a configuration passed in

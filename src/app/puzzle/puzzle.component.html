@@ -1,7 +1,9 @@
 <h3 style="margin-left: 100px;">Sliding Puzzle</h3>
-<main>
-    <button *ngFor="let i of board" (click)="clickFunction(i)" [ngClass]="'board'"
-        [class.board-special]="i===this.bsize*this.bsize">{{i |
+<!-- <main style="grid-template-columns: 120px 120px 120px 120px;"> -->
+<main [ngStyle]="{'grid-template-columns': this.bsize === 4 ? '120px 120px 120px 120px' : '150px 150px 150px', 'width' : this.bsize === 4 ? '480px' : '450px'}">
+    <button *ngFor="let i of board" (click)="clickFunction(i)" [ngClass]="this.bsize==3 ? 'board3' : 'board4'" 
+        [class.board-special3]="i===this.bsize*this.bsize && this.bsize===3"
+        [class.board-special4]="i===this.bsize*this.bsize && this.bsize===4">{{i |
         notnine : this.bsize}}</button>
 </main>
 <div style="margin-left: 100px;">
