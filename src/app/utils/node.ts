@@ -56,54 +56,54 @@ export class PriorityQueue {
 }
 
 export class PriorityQueue1 {
-    heap: MyNode[] = []
+    queue: MyNode[] = []
 
     constructor() {
-        this.heap = [];
+        this.queue = [];
     }
 
     parent = (index: number) => Math.floor((index - 1) / 2)
     left = (index: number) => 2 * index + 1
     right = (index: number) => 2 * index + 2
-    hasLeft = (index: number) => this.left(index) < this.heap.length
-    hasRight = (index: number) => this.right(index) < this.heap.length
+    hasLeft = (index: number) => this.left(index) < this.queue.length
+    hasRight = (index: number) => this.right(index) < this.queue.length
 
     swap = (a: number, b: number) => {
-        const tmp = this.heap[a]
-        this.heap[a] = this.heap[b]
-        this.heap[b] = tmp
+        const tmp = this.queue[a]
+        this.queue[a] = this.queue[b]
+        this.queue[b] = tmp
       }
 
-    insert = (item: MyNode) => {
-        this.heap.push(item)
+    enqueue = (item: MyNode) => {
+        this.queue.push(item)
 
-        let i = this.heap.length - 1
+        let i = this.queue.length - 1
         while (i > 0) {
             const p = this.parent(i)
-            if (this.heap[p].FVALUE < this.heap[i].FVALUE)
+            if (this.queue[p].FVALUE < this.queue[i].FVALUE)
                 break;
 
-            const tmp = this.heap[i]
-            this.heap[i] = this.heap[p]
-            this.heap[p] = tmp
+            const tmp = this.queue[i]
+            this.queue[i] = this.queue[p]
+            this.queue[p] = tmp
             i = p
         }
     }
 
-    pop = () => {
-        if(this.heap.length == 0) 
+    dequeue = () => {
+        if(this.queue.length == 0) 
             return new MyNode;
         
-        this.swap(0, this.heap.length - 1)
-        const item = this.heap.pop()
+        this.swap(0, this.queue.length - 1)
+        const item = this.queue.pop()
   
         let current = 0
         while(this.hasLeft(current)) {
           let smallerChild = this.left(current)
-          if(this.hasRight(current) && this.heap[this.right(current)].FVALUE < this.heap[this.left(current)].FVALUE) 
+          if(this.hasRight(current) && this.queue[this.right(current)].FVALUE < this.queue[this.left(current)].FVALUE) 
             smallerChild = this.right(current)
   
-          if(this.heap[smallerChild].FVALUE > this.heap[current].FVALUE) 
+          if(this.queue[smallerChild].FVALUE > this.queue[current].FVALUE) 
             break
   
           this.swap(current, smallerChild)

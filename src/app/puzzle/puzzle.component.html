@@ -28,10 +28,11 @@
             <b>Nodes Visited:</b> {{this.totalNodes | number: '2.'}}
         </p>
         <p>
-            <b>Nodes Currently in the Queue:</b> {{this.pq01.heap.length | number: '2.'}}
+            <!-- <b>Nodes Currently in the Queue:</b> {{this.pq01.heap.length | number: '2.'}} -->
+            <b>Nodes Currently in the Queue:</b> {{this.pq.queue.length | number: '2.'}}
         </p>
         <p>
-            <b>Time:</b> {{this.timeTotal | number: '2.'}} milisecs
+            <b>Time:</b> {{this.timeTotal }} milisecs
         </p>
     </div>
     <button (click)="linearConflicts(this.board)">lConflicts</button>

@@ -9,13 +9,13 @@ import { MyNode, PriorityQueue, PriorityQueue1 } from '../utils/node';
 export class PuzzleComponent implements OnInit {
 
   // board size
-  bsize = 4
-  // bsize = 3
+  // bsize = 4
+  bsize = 3
 
   nizCounter = []
 
   // hardest configuration to solve 3x3
-  // board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
+  board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
   // board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
 
   // 'unsolvable' configuration 3x3
@@ -28,14 +28,16 @@ export class PuzzleComponent implements OnInit {
 
   // easier to solve configurations 4x4
   // board = [4, 10, 2, 8, 1, 6, 11, 7, 5, 12, 16, 3, 14, 9, 15, 13]
-  board = [16, 10, 7, 2, 6, 13, 11, 3, 4, 8, 12, 15, 1, 9, 14, 5]
+  // board = [5, 1, 13, 10, 16, 12, 7, 4, 6, 9, 8, 2, 14, 15, 3, 11]
+  // board = [16, 10, 7, 2, 6, 13, 11, 3, 4, 8, 12, 15, 1, 9, 14, 5]
   // board = [1, 6, 12, 10, 7, 4, 3, 13, 15, 14, 5, 2, 8, 9, 16, 11]
   // board = [7, 10, 5, 8, 1, 4, 15, 12, 6, 11, 14, 2, 9, 3, 16, 13]
   // board = [1, 10,  16, 2, 3, 7, 13, 6, 9, 14, 8, 12, 4, 15, 5, 11]
-
   // board = [12, 1, 11, 5, 2, 13, 16, 7, 10, 6, 3, 9, 14, 15, 4, 8]
 
-  timeTotal: any;
+  // board = [6,12,8,2,9,10,3,7,15,5,13,16,1,11,14,4]
+
+  timeTotal: number = 0;
 
 
   // array of possible indexes on the board to move to
@@ -45,8 +47,9 @@ export class PuzzleComponent implements OnInit {
   ROOT: any;
 
   // priority quee for tree traversal
-  pq = new PriorityQueue();
-  pq01 = new PriorityQueue1();
+  // pq = new PriorityQueue();
+  pq = new PriorityQueue1();
+  // pq01 = new PriorityQueue1();
 
   // solution found indicator
   stoper = false;
@@ -123,8 +126,8 @@ export class PuzzleComponent implements OnInit {
     this.ROOT = null;
 
     // priority quee for tree traversal
-    // this.pq = new PriorityQueue();
-    this.pq01 = new PriorityQueue1();
+    this.pq = new PriorityQueue1();
+    // this.pq01 = new PriorityQueue1();
 
     // solution found indicator
     this.stoper = false;
@@ -185,23 +188,73 @@ export class PuzzleComponent implements OnInit {
     let pomniz = node.mcVal
     let tekuciPotezi = this.getPossibleMoves(this.bsize, pomniz.indexOf(this.bsize * this.bsize));
 
+    // gready first search
+    // expand nodes with smallest heuristic function value
+    // get lower fvalue nodes
+    // let nodesArr: any[][] = []
+    // let min = 10000
+    // for (let i of tekuciPotezi) {
+    //   if (i > -1) {
+
+    //     let nd = this.makeAmove(node.mcVal, i);
+
+    //     let yap = this.visitedConf.get(this.arrayToStr(nd));
+    //     if (yap === undefined) {
+    //       nodesArr.push([nd, i])
+    //       let msumcurr = this.mdSum(nd);
+    //       min = msumcurr < min ? msumcurr : min
+    //     this.visitedConf.set(this.arrayToStr(nd), this.mdSum(nd) + this.linearConflicts(nd));
+    //     }
+    //   }
+    // }
+
+    // var brojac = nodesArr.length
+    // while (brojac--) {
+    //   if (this.mdSum(nodesArr[brojac][0]) <= min) {
+    //     let niz: number[] = [];
+    //     niz = [...node.nodepath];
+    //     niz.push(nodesArr[brojac][1]);
+    //     // console.log(niz)
+
+    //     // make current node
+    //     let tmpNode = new MyNode(nodesArr[brojac][0], [], this.mdSum(nodesArr[brojac][0]) + this.linearConflicts(nodesArr[brojac][0]), niz);
+    //     // console.log(tmpNode)
+    //     this.pq.enqueue(tmpNode);
+    //     // this.pq01.insert(tmpNode);
+    //     node.children.push(tmpNode);
+
+    //     this.visitedConf.set(this.arrayToStr(nodesArr[brojac][0]), tmpNode.FVALUE);
+    //     this.totalNodes++;
+
+    //     if (this.isSorted(tmpNode.mcVal)) {
+
+    //       this.solutions.push(tmpNode);
+    //       this.stoper = true
+    //       this.foundNode = tmpNode;
+
+    //     }
+    //   }
+    // }
+    // console.log("NODESARR", nodesArr)
+    // console.log("NODESARR", this.ROOT)
+
+    // this.stoper = true
     for (let i of tekuciPotezi) {
 
       // if move is valid
       if (i > -1) {
         let pompotezniz = this.makeAmove(node.mcVal, i);
 
-        // do not visit nodes where FVALUE is greater than 31
-        if ((nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz)) > 80)
-          continue
+        // if ((nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz)) > 80)
+        //   continue
 
         // check if this configuration was already visited
         let yap = this.visitedConf.get(this.arrayToStr(pompotezniz));
 
-        if (yap === undefined ) {
-        // if (yap === undefined || nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz)*2 < node.FVALUE ) {
-        // if (yap === undefined || yap < nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2) {
-        // if (yap === undefined || yap < nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2) {
+        if (yap === undefined) {
+          // if (yap === undefined || nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz)*2 < node.FVALUE ) {
+          // if (yap === undefined || yap < nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2) {
+          // if (yap === undefined || yap < nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2) {
 
           let niz: number[] = [];
           niz = [...node.nodepath];
@@ -210,13 +263,13 @@ export class PuzzleComponent implements OnInit {
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz), niz);
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz), niz);
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.getMisplacedNum(pompotezniz) / 2, niz);
-          let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz)*2, niz);
+          let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz), niz);
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.linearConflicts(pompotezniz)*2, niz);
           // let tmpNode = new MyNode(this.makeAmove(node.mcVal, i), [], nivo + this.mdSum(pompotezniz) + this.linearConflicts(pompotezniz) + this.getMisplacedNum(pompotezniz)/2, niz);
 
 
-          // this.pq.enqueue(tmpNode);
-          this.pq01.insert(tmpNode);
+          this.pq.enqueue(tmpNode);
+          // this.pq01.insert(tmpNode);
           node.children.push(tmpNode);
 
           this.visitedConf.set(this.arrayToStr(pompotezniz), tmpNode.FVALUE);
@@ -248,14 +301,15 @@ export class PuzzleComponent implements OnInit {
     this.ROOT = new MyNode(vred);
     // this.ROOT.setFvalue(this.mdSum(vred) + this.getMisplacedNum(vred)/2);
     // this.ROOT.setFvalue(this.mdSum(vred) + this.getMisplacedNum(vred) / 2);
-    this.ROOT.setFvalue(this.mdSum(vred) + this.linearConflicts(vred) * 2);
+    // this.ROOT.setFvalue(this.mdSum(vred) + this.linearConflicts(vred));
+    this.ROOT.setFvalue(this.mdSum(vred));
 
-    // this.pq.enqueue(this.ROOT);
-    this.pq01.insert(this.ROOT);
+    this.pq.enqueue(this.ROOT);
+    // this.pq01.insert(this.ROOT);
 
     let pomNode: any;
-    // pomNode = this.pq.dequeue();
-    pomNode = this.pq01.pop();
+    pomNode = this.pq.dequeue();
+    // pomNode = this.pq01.pop();
 
     while (true) {
 
@@ -275,8 +329,8 @@ export class PuzzleComponent implements OnInit {
 
       }
 
-      // pomNode = this.pq.dequeue();
-      pomNode = this.pq01.pop();
+      pomNode = this.pq.dequeue();
+      // pomNode = this.pq01.pop();
       // console.log("POMOCNI NODE", pomNode)
 
       // depth--;
@@ -338,7 +392,7 @@ export class PuzzleComponent implements OnInit {
         if (pomniz[j] === this.bsize * this.bsize)
           continue;
 
-        if ((pomniz[j]-1)%this.bsize === i)
+        if ((pomniz[j] - 1) % this.bsize === i)
           belongsColumn.push(pomniz[j]);
       }
 
@@ -369,8 +423,8 @@ export class PuzzleComponent implements OnInit {
     this.ROOT = null;
 
     // priority quee for tree traversal
-    // this.pq = new PriorityQueue();
-    this.pq01 = new PriorityQueue1();
+    this.pq = new PriorityQueue1();
+    // this.pq01 = new PriorityQueue1();
 
     // solution found indicator
     this.stoper = false;
