@@ -6,6 +6,13 @@ import { AppComponent } from './app.component';
 import { PuzzleComponent } from './puzzle/puzzle.component';
 import { NotninePipe } from './notnine.pipe';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   declarations: [
     AppComponent,
@@ -14,7 +21,14 @@ import { NotninePipe } from './notnine.pipe';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,28 +1,65 @@
 <h3 style="margin-left: 100px;">Sliding Puzzle</h3>
 <!-- <main style="grid-template-columns: 120px 120px 120px 120px;"> -->
-<main [ngStyle]="{'grid-template-columns': this.bsize === 4 ? '120px 120px 120px 120px' : '150px 150px 150px', 'width' : this.bsize === 4 ? '480px' : '450px'}">
-    <button *ngFor="let i of board" (click)="clickFunction(i)" [ngClass]="this.bsize==3 ? 'board3' : 'board4'" 
-        [class.board-special3]="i===this.bsize*this.bsize && this.bsize===3"
-        [class.board-special4]="i===this.bsize*this.bsize && this.bsize===4">{{i |
-        notnine : this.bsize}}</button>
-</main>
+<div>
+    <div style="width: 100%; display: table;">
+        <div style="display: table-row">
+            <div class="container">
+                <div class="fixed">
+                    <main
+                        [ngStyle]="{'grid-template-columns': this.bsize === 4 ? '120px 120px 120px 120px' : '150px 150px 150px', 'width' : this.bsize === 4 ? '480px' : '450px'}">
+                        <button *ngFor="let i of board" (click)="clickFunction(i)"
+                            [ngClass]="this.bsize==3 ? 'board3' : 'board4'"
+                            [class.board-special3]="i===this.bsize*this.bsize && this.bsize===3"
+                            [class.board-special4]="i===this.bsize*this.bsize && this.bsize===4">{{i |
+                            notnine : this.bsize}}</button>
+                    </main>
+                </div>
+                <div class="flex-item">
+                    <h3>
+                        Select Size
+                    </h3>
+                    <mat-form-field appearance="fill">
+                        <!-- <mat-label>Select an option</mat-label> -->
+                        <mat-select [(value)]="selectedSize" (selectionChange)="chooseBoard(selectedSize)">
+                            <mat-option value="3x3">3x3</mat-option>
+                            <mat-option value="4x4">4x4</mat-option>
+                            <mat-option >5x5</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <br />
+                    <button class="btnstyle" (click)="shuffleBoard(board)">Shuffle</button>
+                    <button class="btnstyle" (click)="makeTree(this.board, 31)">Find Solution</button>
+                    <button class="btnstyle" [disabled]="disabledButton"
+                        (click)="solveFromMoves(moves)">SolveMoves</button>
+                    <button class="btnstyle" (click)="resetBoard()">Reset</button>
+
+                    <br />
+                    <br />
+                    <br />
+                    <p>
+                        <b>Manhattan Distance:</b> {{mdSum(this.board)}}
+                    </p>
+                    <p>
+                        <b> Linear Conflicts:</b>
+                        {{linearConflicts(this.board)}}
+                    </p>
+                    <p>
+
+                        <b> Num Missplaced:</b> {{getMisplacedNum(this.board)}}
+                    </p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
 <div style="margin-left: 100px;">
 
-    <div class="div">
-        <br />
-        <button (click)="shuffleBoard(board)">Shuffle</button>
-        <button (click)="makeTree(this.board, 31)">Find Solution</button>
-        <button [disabled]="disabledButton" (click)="solveFromMoves(moves)">SolveMoves</button>
-        <button (click)="resetBoard()">Reset</button>
-        <pre>
-
-            <b>Manhattan Distance:</b> {{mdSum(this.board)}} <b> Linear Conflicts</b> {{linearConflicts(this.board)}} <b> Num Missplaced</b> {{getMisplacedNum(this.board)}}
-        </pre>
+    <div class="divstyle">
         <p>
-            <b>No of Moves to solve:</b> {{this.moves.length}}
-        </p>
-        <p>
-            <b>Solution:</b> {{this.moves}}
+            <b>No of Moves to Solve:</b> {{this.moves.length}}
         </p>
         <p>
             <b>Nodes Visited:</b> {{this.totalNodes | number: '2.'}}
@@ -32,9 +69,12 @@
             <b>Nodes Currently in the Queue:</b> {{this.pq.queue.length | number: '2.'}}
         </p>
         <p>
-            <b>Time:</b> {{this.timeTotal }} milisecs
+            <b>Time:</b> {{this.timeTotal | number: '2.'}} milisecs
+        </p>
+        <p style="word-wrap: break-word ">
+            <b>Solution:</b> {{this.moves}}
         </p>
     </div>
-    <button (click)="linearConflicts(this.board)">lConflicts</button>
+    <!-- <button (click)="linearConflicts(this.board)">lConflicts</button> -->
 
 </div>

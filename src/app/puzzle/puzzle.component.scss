@@ -8,6 +8,27 @@ main {
     width: 480px;
     background-color: black;
     margin-left: 100px;
+    // float: right;
+
+}
+
+// div {
+//     color: #fff;
+//     font-family: Tahoma, Verdana, Segoe, sans-serif;
+//     padding: 10px;
+// }
+
+.container {
+    // background-color:#2E4272;
+    display:flex;
+}
+.fixed {
+    // background-color:#4F628E;
+    width: 700px;
+}
+.flex-item {
+    // background-color:#7887AB;
+    flex-grow: 1;
 }
 
 .board3 {
@@ -33,6 +54,7 @@ main {
     background-color: rgb(7, 7, 7);
     height: 150px;
     font-size: 30px;
+    border-radius: 7px;
 }
 
 .board-special4 {
@@ -42,8 +64,20 @@ main {
     background-color: rgb(7, 7, 7);
     height: 120px;
     font-size: 30px;
+    border-radius: 7px;
 }
-
 button {
     border-radius: 7px;
+    // border:rgb(7, 7, 7)
+}
+
+.btnstyle {
+    border-radius: 1px;
+    margin: 5px;
+    padding: 5px;
+    border:rgb(7, 7, 7)
+}
+
+.divstyle{
+    width: 70%;
 }
