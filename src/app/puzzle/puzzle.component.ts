@@ -16,6 +16,10 @@ export class PuzzleComponent implements OnInit {
   selectedSize = "4x4"
 
   board: number[] = []
+
+  maxNodesToVisit: string = "1000000"
+
+  noSolution: boolean = false
   // hardest configuration to solve 3x3
   // board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
   // board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
@@ -129,30 +133,31 @@ export class PuzzleComponent implements OnInit {
     this.currentMoves = [-1, -1, -1, -1]
     this.ROOT = null;
 
-    // priority quee for tree traversal
-    this.pq = new PriorityQueue1();
-    // this.pq01 = new PriorityQueue1();
+    this.resetBoard()
+    // // priority quee for tree traversal
+    // this.pq = new PriorityQueue1();
+    // // this.pq01 = new PriorityQueue1();
 
-    // solution found indicator
-    this.stoper = false;
+    // // solution found indicator
+    // this.stoper = false;
 
-    // total number of nodes in the tree
-    this.totalNodes = 0;
+    // // total number of nodes in the tree
+    // this.totalNodes = 0;
 
-    // keep track of visited configurations
-    this.configuration = new Set();
+    // // keep track of visited configurations
+    // this.configuration = new Set();
 
-    // to do comment
+    // // to do comment
+    // // this.visitedConf = new Map<string, number>();
     // this.visitedConf = new Map<string, number>();
-    this.visitedConf = new Map<string, number>();
 
-    // solution to the puzzle
-    this.solutions = [];
+    // // solution to the puzzle
+    // this.solutions = [];
 
-    this.foundNode = undefined;
+    // this.foundNode = undefined;
 
-    // moves from current configuration to solved puzzle
-    this.moves = [];
+    // // moves from current configuration to solved puzzle
+    // this.moves = [];
 
     // this.moveNum = 0;
     let brojac = 300 + this.getRandomInt(1, this.bsize);
@@ -227,15 +232,23 @@ export class PuzzleComponent implements OnInit {
           // node.children.push(tmpNode);
 
           this.visitedConf.set(this.arrayToStr(pompotezniz), tmpNode.FVALUE);
+
+          if (this.totalNodes >= parseInt(this.maxNodesToVisit)) {
+            this.stoper = true
+            this.noSolution = true
+            return node
+          }
+
           this.totalNodes++;
 
           if (this.isSorted(pompotezniz)) {
-          // if (this.isSorted4(pompotezniz)) {
+            // if (this.isSorted4(pompotezniz)) {
 
             this.solutions.push(tmpNode);
             this.stoper = true
             this.foundNode = tmpNode;
 
+            return node
           }
         }
       }
@@ -245,7 +258,7 @@ export class PuzzleComponent implements OnInit {
   }
 
 
-  greadySearch(node: any, nivo: any){
+  greadySearch(node: any, nivo: any) {
 
     let pomniz = node.mcVal
     let tekuciPotezi = this.getPossibleMoves(this.bsize, pomniz.indexOf(this.bsize * this.bsize));
@@ -283,14 +296,17 @@ export class PuzzleComponent implements OnInit {
         node.children.push(tmpNode);
 
         this.visitedConf.set(this.arrayToStr(nodesArr[brojac][0]), tmpNode.FVALUE);
-        this.totalNodes++;
 
-        if (this.totalNodes > 3000000) {
+        if (this.totalNodes >= parseInt(this.maxNodesToVisit)) {
           this.stoper = true
+          this.noSolution = true
+          break
         }
 
+        this.totalNodes++;
+
         if (this.isSorted(tmpNode.mcVal)) {
-        // if (this.isSorted4(tmpNode.mcVal)) {
+          // if (this.isSorted4(tmpNode.mcVal)) {
 
           this.solutions.push(tmpNode);
           this.stoper = true
@@ -300,13 +316,13 @@ export class PuzzleComponent implements OnInit {
 
       }
     }
-  
+
     // return node
   }
 
   makeTree(vred: number[], depth: number) {
     if (this.isSorted(this.board)) {
-    // if (this.isSorted4(this.board)) {
+      // if (this.isSorted4(this.board)) {
       return;
     }
 
@@ -449,7 +465,7 @@ export class PuzzleComponent implements OnInit {
     this.stoper = false;
 
     // total number of nodes in the tree
-    this.totalNodes = 1;
+    this.totalNodes = 0;
 
     // keep track of visited configurations
     this.configuration = new Set();
@@ -468,6 +484,8 @@ export class PuzzleComponent implements OnInit {
     // this.board = this.setBoard(this.bsize)
 
     this.timeTotal = 0
+
+    this.noSolution = false
   }
 
   /* Utility functions */
@@ -628,5 +646,11 @@ export class PuzzleComponent implements OnInit {
     }
 
     this.board = this.setBoard(this.bsize);
+  }
+
+  setMaxNodes(maxnodes: string) {
+    this.maxNodesToVisit = maxnodes
+    this.stoper = false
+    this.noSolution = false
   }
 }

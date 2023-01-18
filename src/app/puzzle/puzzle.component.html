@@ -23,9 +23,26 @@
                         <mat-select [(value)]="selectedSize" (selectionChange)="chooseBoard(selectedSize)">
                             <mat-option value="3x3">3x3</mat-option>
                             <mat-option value="4x4">4x4</mat-option>
-                            <mat-option >5x5</mat-option>
+                            <mat-option>5x5</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <h3>
+                        Max Number of Nodes to visit
+                    </h3>
+                    <mat-form-field appearance="fill">
+                        <!-- <mat-label>Select an option</mat-label> -->
+                        <mat-select [(value)]="maxNodesToVisit" (selectionChange)="setMaxNodes(maxNodesToVisit)">
+                            <mat-option value="1000000">1&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="2000000">2&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="3000000">3&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="4000000">4&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="5000000">5&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="6000000">6&nbsp;000&nbsp;000</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <i *ngIf="this.noSolution" style="color: brown;">
+                        Could not find solution. Visited {{this.totalNodes| number: '2.' }} nodes.
+                    </i>
 
                     <br />
                     <button class="btnstyle" (click)="shuffleBoard(board)">Shuffle</button>
