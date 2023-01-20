@@ -13,11 +13,36 @@
                             [class.board-special4]="i===this.bsize*this.bsize && this.bsize===4">{{i |
                             notnine : this.bsize}}</button>
                     </main>
+                    <div style="margin-left: 100px;">
+
+                        <div class="divstyle">
+                            <p>
+                                <b>No of Moves to Solve:</b> {{this.moves.length}}
+                            </p>
+                            <p>
+                                <b>Nodes Visited:</b> {{this.totalNodes | number}}
+                            </p>
+                            <p>
+                                <!-- <b>Nodes Currently in the Queue:</b> {{this.pq01.heap.length | number: '2.'}} -->
+                                <b>Nodes Currently in the Queue:</b> {{this.pq.queue.length | number}}
+                            </p>
+                            <p>
+                                <b>Time:</b> {{this.timeTotal | number}} milisecs
+                            </p>
+                            <p style="word-wrap: break-word ">
+                                <b>Solution:</b> {{this.moves}}
+                            </p>
+                        </div>
+                        <!-- <button (click)="linearConflicts(this.board)">lConflicts</button> -->
+                    
+                    </div>
                 </div>
                 <div class="flex-item">
-                    <h3>
-                        Select Size
-                    </h3>
+                    <p>
+                        <b>
+                            Select Size
+                        </b>
+                    </p>
                     <mat-form-field appearance="fill">
                         <!-- <mat-label>Select an option</mat-label> -->
                         <mat-select [(value)]="selectedSize" (selectionChange)="chooseBoard(selectedSize)">
@@ -26,11 +51,20 @@
                             <mat-option>5x5</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <h3>
-                        Max Number of Nodes to visit
-                    </h3>
+                    <br />
+                    <label id="radio-group-label"><b>Search Method: </b></label>
+                    <mat-radio-group aria-labelledby="radio-group-label" class="radio-group" [(ngModel)]="searchMethod">
+                        <mat-radio-button class="radio-button" value="1"> A*</mat-radio-button>
+                        <mat-radio-button class="radio-button" value="2"> Gready first + Divide&Conquer</mat-radio-button>
+                    </mat-radio-group>
+                    <p>
+                        <b>
+                            Max Number of Nodes to visit
+                        </b>
+                    </p>
                     <mat-form-field appearance="fill">
                         <!-- <mat-label>Select an option</mat-label> -->
+                        <!-- value type string, otherwise item is not auto selected on page start  -->
                         <mat-select [(value)]="maxNodesToVisit" (selectionChange)="setMaxNodes(maxNodesToVisit)">
                             <mat-option value="1000000">1&nbsp;000&nbsp;000</mat-option>
                             <mat-option value="2000000">2&nbsp;000&nbsp;000</mat-option>
@@ -38,10 +72,18 @@
                             <mat-option value="4000000">4&nbsp;000&nbsp;000</mat-option>
                             <mat-option value="5000000">5&nbsp;000&nbsp;000</mat-option>
                             <mat-option value="6000000">6&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="7000000">7&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="8000000">8&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="9000000">9&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="10000000">10&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="11000000">11&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="12000000">12&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="13000000">13&nbsp;000&nbsp;000</mat-option>
+                            <mat-option value="100000000">*unlimited*</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <i *ngIf="this.noSolution" style="color: brown;">
-                        Could not find solution. Visited {{this.totalNodes| number: '2.' }} nodes.
+                        Could not find solution. Visited {{this.totalNodes| number }} nodes.
                     </i>
 
                     <br />
@@ -66,32 +108,10 @@
                         <b> Num Missplaced:</b> {{getMisplacedNum(this.board)}}
                     </p>
                 </div>
+
             </div>
 
 
         </div>
     </div>
-</div>
-<div style="margin-left: 100px;">
-
-    <div class="divstyle">
-        <p>
-            <b>No of Moves to Solve:</b> {{this.moves.length}}
-        </p>
-        <p>
-            <b>Nodes Visited:</b> {{this.totalNodes | number: '2.'}}
-        </p>
-        <p>
-            <!-- <b>Nodes Currently in the Queue:</b> {{this.pq01.heap.length | number: '2.'}} -->
-            <b>Nodes Currently in the Queue:</b> {{this.pq.queue.length | number: '2.'}}
-        </p>
-        <p>
-            <b>Time:</b> {{this.timeTotal | number: '2.'}} milisecs
-        </p>
-        <p style="word-wrap: break-word ">
-            <b>Solution:</b> {{this.moves}}
-        </p>
-    </div>
-    <!-- <button (click)="linearConflicts(this.board)">lConflicts</button> -->
-
 </div>

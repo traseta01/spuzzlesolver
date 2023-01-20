@@ -1,3 +1,4 @@
+import { NONE_TYPE } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { MyNode, PriorityQueue, PriorityQueue1 } from '../utils/node';
 
@@ -24,6 +25,7 @@ export class PuzzleComponent implements OnInit {
   // board = [6, 4, 7, 8, 5, 9, 3, 2, 1];
   // board = [8, 6, 7, 2, 5, 4, 3, 9, 1];
 
+  searchMethod = "1"
   // 'unsolvable' configuration 3x3
   // board = [6, 4, 2, 8, 3, 5, 1, 7, 9];
 
@@ -72,7 +74,7 @@ export class PuzzleComponent implements OnInit {
   // solution to the puzzle
   solutions: MyNode[] = [];
 
-  foundNode: any;
+  foundNode: MyNode = new MyNode;
 
   // moves from current configuration to solved puzzle
   moves: number[] = [];
@@ -129,35 +131,10 @@ export class PuzzleComponent implements OnInit {
 
   shuffleBoard(arr: number[]): void {
 
-    this.configuration = new Set();
     this.currentMoves = [-1, -1, -1, -1]
     this.ROOT = null;
 
     this.resetBoard()
-    // // priority quee for tree traversal
-    // this.pq = new PriorityQueue1();
-    // // this.pq01 = new PriorityQueue1();
-
-    // // solution found indicator
-    // this.stoper = false;
-
-    // // total number of nodes in the tree
-    // this.totalNodes = 0;
-
-    // // keep track of visited configurations
-    // this.configuration = new Set();
-
-    // // to do comment
-    // // this.visitedConf = new Map<string, number>();
-    // this.visitedConf = new Map<string, number>();
-
-    // // solution to the puzzle
-    // this.solutions = [];
-
-    // this.foundNode = undefined;
-
-    // // moves from current configuration to solved puzzle
-    // this.moves = [];
 
     // this.moveNum = 0;
     let brojac = 300 + this.getRandomInt(1, this.bsize);
@@ -352,7 +329,7 @@ export class PuzzleComponent implements OnInit {
       if (this.stoper) {
         console.timeEnd("01")
         var end = Date.now();
-        this.timeTotal = (end - begin);
+        this.timeTotal += (end - begin);
 
         this.moves = this.foundNode.nodepath;
         // console.log("JSON: ", JSON.stringify(this.ROOT));
@@ -453,13 +430,11 @@ export class PuzzleComponent implements OnInit {
 
 
   resetBoard() {
-    this.configuration = new Set();
-    this.currentMoves = [-1, -1, -1, -1]
     this.ROOT = null;
+    this.chooseBoard(this.selectedSize)
 
     // priority quee for tree traversal
     this.pq = new PriorityQueue1();
-    // this.pq01 = new PriorityQueue1();
 
     // solution found indicator
     this.stoper = false;
@@ -468,20 +443,12 @@ export class PuzzleComponent implements OnInit {
     this.totalNodes = 0;
 
     // keep track of visited configurations
-    this.configuration = new Set();
-
-    // to do comment
     this.visitedConf = new Map<string, number>();
 
     // solution to the puzzle
     this.solutions = [];
 
-    this.foundNode = undefined;
-
-    // moves from current configuration to solved puzzle
-    this.moves = [];
-
-    // this.board = this.setBoard(this.bsize)
+    this.foundNode = new MyNode;
 
     this.timeTotal = 0
 
