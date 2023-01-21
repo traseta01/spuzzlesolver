@@ -86,6 +86,7 @@ export class PuzzleComponent implements OnInit {
 
   ngOnInit(): void {
     this.chooseBoard(this.selectedSize)
+    this.board = [15, 14, 8, 12, 10, 11, 9, 13, 2, 6, 5, 1, 3, 7, 4, 16]
   }
 
 
@@ -320,11 +321,9 @@ export class PuzzleComponent implements OnInit {
     pomNode = this.pq.dequeue();
     // pomNode = this.pq01.pop();
 
-    // while (true) {
     while (!this.stoper || this.pq.queue.length > 0) {
 
-      this.addChildNodes(pomNode, pomNode.nodepath.length + 1);
-      // this.greadySearch(pomNode, pomNode.nodepath.length + 1);
+      this.searchMethod === "1" ? this.addChildNodes(pomNode, pomNode.nodepath.length + 1) : this.greadySearch(pomNode, pomNode.nodepath.length + 1);
 
       if (this.stoper) {
         console.timeEnd("01")
@@ -610,6 +609,10 @@ export class PuzzleComponent implements OnInit {
 
     if (ssize === "4x4") {
       this.bsize = 4;
+    }
+
+    if (ssize === "5x5") {
+      this.bsize = 5;
     }
 
     this.board = this.setBoard(this.bsize);
