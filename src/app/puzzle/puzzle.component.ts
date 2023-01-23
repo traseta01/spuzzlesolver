@@ -86,7 +86,6 @@ export class PuzzleComponent implements OnInit {
 
   ngOnInit(): void {
     this.chooseBoard(this.selectedSize)
-    this.board = [15, 14, 8, 12, 10, 11, 9, 13, 2, 6, 5, 1, 3, 7, 4, 16]
   }
 
 
@@ -613,6 +612,10 @@ export class PuzzleComponent implements OnInit {
 
     if (ssize === "5x5") {
       this.bsize = 5;
+    }
+
+    if (ssize === "6x6") {
+      this.bsize = 6;
     }
 
     this.board = this.setBoard(this.bsize);

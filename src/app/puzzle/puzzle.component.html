@@ -1,20 +1,28 @@
-<h3 style="margin-left: 100px;">Sliding Puzzle</h3>
+<div style="margin-left: 100px;">
+<h3 >Sliding Puzzle</h3>
+<p> Current state: {{this.board}}
+</p>
+
+</div>
 <!-- <main style="grid-template-columns: 120px 120px 120px 120px;"> -->
 <div>
     <div style="width: 100%; display: table;">
             <div class="container">
                 <div class="fixed">
                     <main [ngStyle]="{'grid-template-columns': this.bsize === 4 ? '120px 120px 120px 120px' :
-                                                               this.bsize === 3 ? '150px 150px 150px' : '110px 110px 110px 110px 110px', 
-                                       'width' : this.bsize === 4 ? '480px' : this.bsize === 3 ? '450px' : '550px'}">
+                                                               this.bsize === 3 ? '150px 150px 150px' : 
+                                                               this.bsize === 5 ? '110px 110px 110px 110px 110px' : '91px 91px 91px 91px 91px 91px', 
+                                      'width' : this.bsize === 4 ? '480px' : this.bsize === 3 ? '450px' : this.bsize===5 ? '550px' : '546px'}">
                     <!-- <main   [class.boardThree]="this.bsize===3"
                             [class.boardFour]="this.bsize===4"
                             [class.boardFour]="this.bsize===5" > -->
                         <button *ngFor="let i of board" (click)="clickFunction(i)"
-                            [ngClass]="this.bsize==3 ? 'board3' : this.bsize === 4 ? 'board4' : 'board5'"
+                            [ngClass]="this.bsize==3 ? 'board3' : this.bsize === 4 ? 'board4' : this.bsize === 5 ? 'board5' : 'board6'"
                             [class.board-special3]="i===this.bsize*this.bsize && this.bsize===3"
                             [class.board-special4]="i===this.bsize*this.bsize && this.bsize===4"
-                            [class.board-special5]="i===this.bsize*this.bsize && this.bsize===5">
+                            [class.board-special5]="i===this.bsize*this.bsize && this.bsize===5"
+                            [class.board-special6]="i===this.bsize*this.bsize && this.bsize===6"
+                            >
                             {{i | notnine : this.bsize}}
                         </button>
                     </main>
@@ -54,14 +62,15 @@
                             <mat-option value="3x3">3x3</mat-option>
                             <mat-option value="4x4">4x4</mat-option>
                             <mat-option value="5x5">5x5</mat-option>
+                            <mat-option value="6x6">6x6</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <br />
                     <label id="radio-group-label"><b>Search Method: </b></label>
                     <mat-radio-group aria-labelledby="radio-group-label" class="radio-group" [(ngModel)]="searchMethod">
-                        <mat-radio-button class="radio-button" value="1"> A<b>*</b></mat-radio-button>
-                        <mat-radio-button class="radio-button" value="2"> Gready first</mat-radio-button>
-                        <mat-radio-button class="radio-button" value="3"> Gready first + Divide&Conquer</mat-radio-button>
+                        <mat-radio-button class="radio-button" value="1"> Non-Gready </mat-radio-button>
+                        <mat-radio-button class="radio-button" value="2"> Gready</mat-radio-button>
+                        <!-- <mat-radio-button class="radio-button" value="3"> Gready first + Divide&Conquer</mat-radio-button> -->
                     </mat-radio-group>
                     <p>
                         <b>
